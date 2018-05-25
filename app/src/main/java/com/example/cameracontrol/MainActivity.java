@@ -12,6 +12,7 @@ import org.opencv.android.LoaderCallbackInterface;
 import org.opencv.android.OpenCVLoader;
 import org.opencv.core.Mat;
 import org.opencv.android.CameraBridgeViewBase.CvCameraViewListener2;
+import org.opencv.core.Point;
 import org.opencv.imgproc.Imgproc;
 import org.opencv.imgcodecs.*;
 //import org.opencv.core.Size;
@@ -20,10 +21,12 @@ import org.opencv.imgcodecs.*;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Dialog;
+import android.content.Intent;
 import android.hardware.Camera;
 import android.hardware.Camera.Size;
 import android.os.Bundle;
 import android.os.Environment;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -41,9 +44,9 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import android.support.v4.widget.SimpleCursorAdapter;
-
-public class MainActivity extends Activity implements CvCameraViewListener2, OnTouchListener {
+//不显示标题栏的原因，从Activity 改成 AppCompatActivity
+//不再使用implements , OnTouchListener
+public class MainActivity extends AppCompatActivity implements CvCameraViewListener2{
     private static final String TAG = "OCVSample::Activity";
 
     String SavePath;
@@ -57,6 +60,7 @@ public class MainActivity extends Activity implements CvCameraViewListener2, OnT
 
     private boolean takepic;
     private static Mat save_mat;
+    private static Mat show_mat;
     private static boolean PicSavedState;
 
     private BaseLoaderCallback mLoaderCallback = new BaseLoaderCallback(this) {
@@ -66,7 +70,7 @@ public class MainActivity extends Activity implements CvCameraViewListener2, OnT
                 case LoaderCallbackInterface.SUCCESS: {
                     Log.i(TAG, "OpenCV loaded successfully");
                     mOpenCvCameraView.enableView();
-                    mOpenCvCameraView.setOnTouchListener(MainActivity.this);
+                    //mOpenCvCameraView.setOnTouchListener(MainActivity.this);
                 }
                 break;
                 default: {
@@ -88,6 +92,9 @@ public class MainActivity extends Activity implements CvCameraViewListener2, OnT
     public void onCreate(Bundle savedInstanceState) {
         Log.i(TAG, "called onCreate");
         super.onCreate(savedInstanceState);
+
+        //setHasOptionsMenu(true);
+
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
         setContentView(R.layout.activity_main);
@@ -101,6 +108,7 @@ public class MainActivity extends Activity implements CvCameraViewListener2, OnT
         takepic = false;
         PicSavedState = false;
     }
+
 
     @Override
     public void onPause() {
@@ -129,16 +137,23 @@ public class MainActivity extends Activity implements CvCameraViewListener2, OnT
     }
 
     public void onCameraViewStarted(int width, int height) {
+        mOpenCvCameraView.setrotation();
+
     }
 
     public void onCameraViewStopped() {
     }
 
     public Mat onCameraFrame(CvCameraViewFrame inputFrame) {
+//        Mat dst = new Mat();
+//        Mat gray = inputFrame.gray();
+//        Mat rotateMat = Imgproc.getRotationMatrix2D(new Point(gray.rows()/2,gray.cols()/2), -90, 1);
+//        Imgproc.warpAffine(gray, dst, rotateMat, dst.size());
+
         if(this.takepic == true){
             Toast.makeText(this," 123456", Toast.LENGTH_SHORT).show();
             //保存inputFrame
-            save_mat = inputFrame.gray();
+            save_mat = inputFrame.rgba();
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss");
             String currentDateandTime = sdf.format(new Date());
 //            String fileName = Environment.getExternalStorageDirectory().getPath() +
@@ -149,26 +164,39 @@ public class MainActivity extends Activity implements CvCameraViewListener2, OnT
             this.PicSavedState = false;
             this.takepic = false;
         }
-        Mat rgbaInnerWindow;
-        Mat  mIntermediateMat = new Mat();
-        Mat rgba = inputFrame.gray();
-        int rows = (int) rgba.height();
-        int cols = (int) rgba.width();
 
-        int left = 0;
-        int top = 0;
+//        show_mat = inputFrame.gray();
+//
+//        //清理内存，否则程序会报错
+////        dst.release();
+////        gray.release();
+////        rotateMat.release();
+//
+//        Mat rgbaInnerWindow;
+//        Mat  mIntermediateMat = new Mat();
+//        Mat rgba = show_mat;
+//        int rows = (int) rgba.height();
+//        int cols = (int) rgba.width();
+//
+//        int left = 0;
+//        int top = 0;
+//
+//        int width = cols;
+//        int height = rows;
+//
+//        //图像处理
+//        rgbaInnerWindow = rgba.submat(top, top + height, left, left + width);
+//        Imgproc.Canny(rgbaInnerWindow, mIntermediateMat, 80, 90);
+//        Imgproc.threshold(mIntermediateMat,rgbaInnerWindow,100,255,0);
+//        Imgproc.cvtColor(mIntermediateMat, rgbaInnerWindow, Imgproc.COLOR_GRAY2BGRA, 4);
+//        show_mat =  rgbaInnerWindow.clone();
+//
+//        //清理内存，否则程序会报错
+//        rgbaInnerWindow.release();
+//        mIntermediateMat.release();
+//        rgba.release();
 
-        int width = cols;
-        int height = rows;
-
-        rgbaInnerWindow = rgba.submat(top, top + height, left, left + width);
-        //Imgproc.Canny(rgbaInnerWindow, mIntermediateMat, 80, 90);
-        Imgproc.threshold(mIntermediateMat,rgbaInnerWindow,100,255,0);
-        //Imgproc.cvtColor(mIntermediateMat, rgbaInnerWindow, Imgproc.COLOR_GRAY2BGRA, 4);
-        rgbaInnerWindow.release();
-        mIntermediateMat.release();
-
-        return rgba;
+        return inputFrame.rgba();
     }
 
     @Override
@@ -224,48 +252,48 @@ public class MainActivity extends Activity implements CvCameraViewListener2, OnT
         return true;
     }
 
-    @SuppressLint("SimpleDateFormat")
-    @Override
-    public boolean onTouch(View v, MotionEvent event) {
-        //如果路径还未设置，开始设置路径
-        if(this.PicSavedState == false) {
-
-            Log.i(TAG, "onTouch event show dialog");
-
-            //设置相机参数,不管用
-            Camera.Parameters x = mOpenCvCameraView.getpara();
-            x.setJpegQuality(100);
-            //x.setPictureSize(1920, 1080);
-            x.setPictureSize(4160,3120);
-            x.setPictureFormat(256);
-            x.setFocusMode(Camera.Parameters.FOCUS_MODE_FIXED);
-
-//        //拍照
-//        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss");
-//        String currentDateandTime = sdf.format(new Date());
-//        String fileName = Environment.getExternalStorageDirectory().getPath() +
-//                "/sample_picture_" + currentDateandTime + ".jpg";
-//        mOpenCvCameraView.takePicture(fileName);
-//        Toast.makeText(this, fileName + " saved", Toast.LENGTH_SHORT).show();
-
-
-//        //保存图片的分辨率不会变但是图像会变暗？？？
-//        Size resolution = mOpenCvCameraView.getResolution();
-//        resolution.height = 1080;
-//        resolution.width = 1920;
-//        mOpenCvCameraView.setResolution(resolution);
-
-
-            //弹出diglog设置路径
-            fireCustomDialog();
-        } else {
-            //如果路径已经设置，保存图片。
-            Log.i(TAG, "onTouch event save pic");
-            Toast.makeText(this, "save picture", Toast.LENGTH_SHORT).show();
-            this.takepic = true;
-        }
-        return false;
-    }
+//    @SuppressLint("SimpleDateFormat")
+//    @Override
+//    public boolean onTouch(View v, MotionEvent event) {
+//        //如果路径还未设置，开始设置路径
+//        if(this.PicSavedState == false) {
+//
+//            Log.i(TAG, "onTouch event show dialog");
+//
+//            //设置相机参数,不管用
+//            Camera.Parameters x = mOpenCvCameraView.getpara();
+//            x.setJpegQuality(100);
+//            //x.setPictureSize(1920, 1080);
+//            x.setPictureSize(4160,3120);
+//            x.setPictureFormat(256);
+//            x.setFocusMode(Camera.Parameters.FOCUS_MODE_FIXED);
+//
+////        //拍照
+////        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss");
+////        String currentDateandTime = sdf.format(new Date());
+////        String fileName = Environment.getExternalStorageDirectory().getPath() +
+////                "/sample_picture_" + currentDateandTime + ".jpg";
+////        mOpenCvCameraView.takePicture(fileName);
+////        Toast.makeText(this, fileName + " saved", Toast.LENGTH_SHORT).show();
+//
+//
+////        //保存图片的分辨率不会变但是图像会变暗？？？
+////        Size resolution = mOpenCvCameraView.getResolution();
+////        resolution.height = 1080;
+////        resolution.width = 1920;
+////        mOpenCvCameraView.setResolution(resolution);
+//
+//
+//            //弹出diglog设置路径
+//            fireCustomDialog();
+//        } else {
+//            //如果路径已经设置，保存图片。
+//            Log.i(TAG, "onTouch event save pic");
+//            Toast.makeText(this, "save picture", Toast.LENGTH_SHORT).show();
+//            this.takepic = true;
+//        }
+//        return false;
+//    }
 
     //触摸弹出对话框输入文件名不会保存打开对话框前的图片。
     //保存文件时弹出对话框，不能弹出？
@@ -327,9 +355,58 @@ public class MainActivity extends Activity implements CvCameraViewListener2, OnT
         fileName = Environment.getExternalStorageDirectory().getPath() + "/" + "qq" + ".jpg";
         Imgcodecs.imwrite(fileName, rgbaInnerWindow);
 
+
         rgbaInnerWindow.release();
         mIntermediateMat.release();
 
+    }
+
+    public void take_pic(View view){
+        //如果路径还未设置，开始设置路径
+        if(this.PicSavedState == false) {
+
+            Log.i(TAG, "onTouch event show dialog");
+
+            //设置相机参数,不管用
+            Camera.Parameters x = mOpenCvCameraView.getpara();
+            x.setJpegQuality(100);
+            //x.setPictureSize(1920, 1080);
+            x.setPictureSize(4160,3120);
+            x.setPictureFormat(256);
+            x.setFocusMode(Camera.Parameters.FOCUS_MODE_FIXED);
+
+//        //拍照
+//        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss");
+//        String currentDateandTime = sdf.format(new Date());
+//        String fileName = Environment.getExternalStorageDirectory().getPath() +
+//                "/sample_picture_" + currentDateandTime + ".jpg";
+//        mOpenCvCameraView.takePicture(fileName);
+//        Toast.makeText(this, fileName + " saved", Toast.LENGTH_SHORT).show();
+
+
+//        //保存图片的分辨率不会变但是图像会变暗？？？
+//        Size resolution = mOpenCvCameraView.getResolution();
+//        resolution.height = 1080;
+//        resolution.width = 1920;
+//        mOpenCvCameraView.setResolution(resolution);
+
+
+            //弹出diglog设置路径
+            fireCustomDialog();
+        } else {
+            //如果路径已经设置，保存图片。
+            Log.i(TAG, "onTouch event save pic");
+            Toast.makeText(this, "save picture", Toast.LENGTH_SHORT).show();
+            this.takepic = true;
+        }
+    }
+
+    public void switch_page(View view){
+        Intent intent = new Intent(MainActivity.this,MeasureActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putString("text","要发送的消息");
+        intent.putExtras(bundle);
+        startActivity(intent);
     }
 }
 

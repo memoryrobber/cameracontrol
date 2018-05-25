@@ -1,13 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.cameracontrol"
-    android:versionCode="301"
-    android:versionName="3.01">
+    package="com.example.cameracontrol">
+    <!-- android:versionCode="301"
+    android:versionName="3.01" -->
+<!--android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
+ landscape portrait -->
 
     <application
         android:label="@string/app_name"
         android:icon="@mipmap/ic_launcher"
-        android:theme="@android:style/Theme.NoTitleBar.Fullscreen" >
+        android:theme="@style/AppTheme">
 
         <activity android:name=".MainActivity"
             android:label="@string/app_name"
@@ -18,22 +20,28 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-    </application>
 
+        <activity android:name=".MeasureActivity"
+            android:label="@string/app_name2"
+            android:screenOrientation="portrait">
+        </activity>
+    </application>
+<!--
     <supports-screens android:resizeable="true"
         android:smallScreens="true"
         android:normalScreens="true"
         android:largeScreens="true"
         android:anyDensity="true" />
 
-    <uses-sdk android:minSdkVersion="8" />
-
+    <uses-sdk android:minSdkVersion="7" android:targetSdkVersion="10"/>
+-->
     <uses-permission android:name="android.permission.CAMERA"/>
 
     <uses-feature android:name="android.hardware.camera" android:required="false"/>
     <uses-feature android:name="android.hardware.camera.autofocus" android:required="false"/>
     <uses-feature android:name="android.hardware.camera.front" android:required="false"/>
     <uses-feature android:name="android.hardware.camera.front.autofocus" android:required="false"/>
+
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
 </manifest>

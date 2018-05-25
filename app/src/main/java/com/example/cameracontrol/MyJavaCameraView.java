@@ -48,6 +48,12 @@ public class MyJavaCameraView extends JavaCameraView implements PictureCallback 
         return x;
     }
 
+    public void setrotation(){
+        Parameters x = mCamera.getParameters();
+        x.setRotation(0);
+        mCamera.setParameters(x);
+    }
+
     public List<Size> getResolutionList() {
         return mCamera.getParameters().getSupportedPreviewSizes();
     }
