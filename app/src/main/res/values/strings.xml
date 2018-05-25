@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">cameracontrol</string>
+    <string name="butcali">标定</string>
+
 </resources>

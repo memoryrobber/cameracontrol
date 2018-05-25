@@ -138,7 +138,7 @@ public class MainActivity extends Activity implements CvCameraViewListener2, OnT
         if(this.takepic == true){
             Toast.makeText(this," 123456", Toast.LENGTH_SHORT).show();
             //保存inputFrame
-            save_mat = inputFrame.rgba();
+            save_mat = inputFrame.gray();
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss");
             String currentDateandTime = sdf.format(new Date());
 //            String fileName = Environment.getExternalStorageDirectory().getPath() +
@@ -147,8 +147,6 @@ public class MainActivity extends Activity implements CvCameraViewListener2, OnT
             String fileName = Environment.getExternalStorageDirectory().getPath() + "/" + SavePath + ".jpg";
             Imgcodecs.imwrite(fileName, save_mat);
             this.PicSavedState = false;
-
-
             this.takepic = false;
         }
         Mat rgbaInnerWindow;
@@ -263,6 +261,7 @@ public class MainActivity extends Activity implements CvCameraViewListener2, OnT
         } else {
             //如果路径已经设置，保存图片。
             Log.i(TAG, "onTouch event save pic");
+            Toast.makeText(this, "save picture", Toast.LENGTH_SHORT).show();
             this.takepic = true;
         }
         return false;
@@ -306,6 +305,31 @@ public class MainActivity extends Activity implements CvCameraViewListener2, OnT
             }
         });
         dialog.show();
+    }
+
+    public void calibration(View view){
+        Log.i(TAG, "calibration button pressed");
+        Toast.makeText(this, "calibration button pressed", Toast.LENGTH_SHORT).show();
+        //读取图片，标定，弹出标定结果对话框
+        String fileName = Environment.getExternalStorageDirectory().getPath() + "/" + "q" + ".jpg";
+        Mat matread= Imgcodecs.imread(fileName);
+
+        Mat rgbaInnerWindow;
+        Mat  mIntermediateMat = new Mat();
+
+        rgbaInnerWindow = matread.submat(0, 1080, 0, 1920);
+        Imgproc.Canny(rgbaInnerWindow, mIntermediateMat, 80, 90);
+        //Imgproc.threshold(mIntermediateMat,rgbaInnerWindow,100,255,0);
+
+        Imgproc.cvtColor(mIntermediateMat, rgbaInnerWindow, Imgproc.COLOR_GRAY2BGRA, 4);
+
+        //保存图片
+        fileName = Environment.getExternalStorageDirectory().getPath() + "/" + "qq" + ".jpg";
+        Imgcodecs.imwrite(fileName, rgbaInnerWindow);
+
+        rgbaInnerWindow.release();
+        mIntermediateMat.release();
+
     }
 }
 
