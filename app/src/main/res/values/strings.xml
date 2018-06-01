@@ -1,5 +1,8 @@
 <resources>
     <string name="app_name">cameracontrol</string>
+    <string name="app_name2">新界面</string>
     <string name="butcali">标定</string>
-
+    <string name="buttakepic">拍照</string>
+    <string name="butswitch">测量</string>
+    <string name="butback">测试</string>
 </resources>
