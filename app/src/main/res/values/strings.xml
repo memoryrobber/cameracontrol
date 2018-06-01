@@ -5,4 +5,9 @@
     <string name="buttakepic">拍照</string>
     <string name="butswitch">测量</string>
     <string name="butback">测试</string>
+
+    <string name="picture">Picture</string>
+    <string name="description_info">Info</string>
+    <string name="request_permission">This app needs camera permission.</string>
+    <string name="intro_message">intro_message</string>
 </resources>

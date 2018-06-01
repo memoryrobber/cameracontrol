@@ -13,7 +13,7 @@
 
         <activity android:name=".MainActivity"
             android:label="@string/app_name"
-            android:screenOrientation="landscape"
+            android:screenOrientation="portrait"
             android:configChanges="keyboardHidden|orientation">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -21,10 +21,34 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".MeasureActivity"
-            android:label="@string/app_name2"
-            android:screenOrientation="portrait">
+        <activity
+        android:name=".MeasureActivity"
+        android:label="测量界面"
+        android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
+
+        <activity android:name=".TakePIcActivity"
+            android:label="拍照界面">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".CalibrationActivity"
+            android:label="标定界面"
+            android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
     </application>
 <!--
     <supports-screens android:resizeable="true"
@@ -43,5 +67,6 @@
     <uses-feature android:name="android.hardware.camera.front.autofocus" android:required="false"/>
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
 </manifest>
