@@ -68,7 +68,6 @@ public abstract class CalibrationResult {
         }
         distortionCoefficients.put(0, 0, distortionCoefficientsArray);
         Log.i(TAG, "Loaded distortion coefficients: " + distortionCoefficients.dump());
-
         return true;
     }
 }
