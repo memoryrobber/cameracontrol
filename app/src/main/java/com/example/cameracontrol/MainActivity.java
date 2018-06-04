@@ -385,6 +385,12 @@ public class MainActivity extends AppCompatActivity{
 //        }
 //    }
 
+    public void wire_measure(View view){
+        Toast.makeText(this, "线缆测量按钮被按下", Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(MainActivity.this,WireRadiusActivity.class);
+        startActivity(intent);
+    }
+
     public void calibration_page(View view){
         Toast.makeText(this, "标定拍照按钮被按下", Toast.LENGTH_SHORT).show();
         Intent intent = new Intent(MainActivity.this,CalibrationActivity.class);

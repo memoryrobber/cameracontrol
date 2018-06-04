@@ -31,6 +31,16 @@
             </intent-filter>
         </activity>
 
+        <activity
+            android:name=".WireRadiusActivity"
+            android:label="线缆测量界面"
+            android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
         <activity android:name=".TakePIcActivity"
             android:label="拍照界面">
             <intent-filter>
