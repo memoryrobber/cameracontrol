@@ -90,33 +90,56 @@ public class MeasureActivity extends AppCompatActivity {
     }
 
     public void read_pic(View view) {
+        long startTime = System.currentTimeMillis();
         Toast.makeText(this, "读取图片按钮被按下", Toast.LENGTH_SHORT).show();
         textView.setText("读取图片");
         String fileName = Environment.getExternalStorageDirectory().getPath() + "/" + "1" + ".jpg";
         Bitmap bitmap;
         bitmap = ReadBitmap(fileName);
 
+        long endTime = System.currentTimeMillis();
+        String str = "运行时间:" + (endTime - startTime) + "ms";
+        textView.setText(str);
+
         //显示原图
         Bitmap bmp1 = bitmap.copy(Bitmap.Config.ARGB_8888, true);
         bmpresult = bmp1.copy(Bitmap.Config.ARGB_8888, true);
         ShowBitmap(imageView, bmp1);
+
     }
 
     public void threshold(View view){
-        textView.setText("二值化");
+        long startTime = System.currentTimeMillis();
         Bitmap bitmap = bmpresult.copy(Bitmap.Config.ARGB_8888, true);
         Bitmap bmp1 = BitmapBgra2BitmapGray(bitmap);         //3通道变1通道
         Bitmap bmp2 = BitmapThreshold(bmp1, 100);    //阈值
-        //平滑
+
+        //显示运行时间
+        long endTime = System.currentTimeMillis();
+        String str = "运行时间:" + (endTime - startTime) + "ms";
+        textView.setText(str);
+
         bmpresult = bmp2.copy(Bitmap.Config.ARGB_8888, true);
         ShowBitmap(imageView, bmp2);
     }
 
     //找轮廓
     public void find_contours(View view){
+
         Bitmap bitmap = bmpresult.copy(Bitmap.Config.ARGB_8888, true);
         Mat matSrc = new Mat();
+
+
+        long startTime = System.currentTimeMillis();
+
         Utils.bitmapToMat(bitmap,matSrc);
+
+        //显示运行时间
+        long endTime = System.currentTimeMillis();
+        String str = "运行时间:" + (endTime - startTime) + "ms";
+        textView.setText(str);
+
+
 
         Mat matDst = Mat.zeros(matSrc.size(),CV_8UC3);
 
@@ -125,6 +148,9 @@ public class MeasureActivity extends AppCompatActivity {
         List<MatOfPoint> contours = new ArrayList<>();
         Mat hierarchy = new Mat();
         Imgproc.findContours(matSrc,contours ,hierarchy,Imgproc.RETR_TREE,Imgproc.CHAIN_APPROX_NONE, new Point(0,0));
+
+
+
 
         Imgproc.drawContours(matDst,contours,-1,new Scalar(255,0,0),2);
 

@@ -57,7 +57,7 @@ public class CalibrationActivity extends AppCompatActivity {
         imageView3 = findViewById(R.id.imageView3);
         imageView4 = findViewById(R.id.imageView4);
         progressBar = findViewById(R.id.progressBar);
-        progressBar.setMax(7);//设置最大进度
+        progressBar.setMax(25);//设置最大进度
 
         //标定器初始化
         String fileName11= Environment.getExternalStorageDirectory().getPath() + "/" + "1"+ ".jpg";
@@ -149,6 +149,7 @@ public class CalibrationActivity extends AppCompatActivity {
 
 
     public void calibration(View view){
+        //CalibrationResult.tryLoad(this, mCalibrator.getCameraMatrix(), mCalibrator.getDistortionCoefficients())
         if(CalibrationResult.tryLoad(this, mCalibrator.getCameraMatrix(), mCalibrator.getDistortionCoefficients()))
         {
             Log.i(TAG, "读取标定参数...");
@@ -204,11 +205,12 @@ public class CalibrationActivity extends AppCompatActivity {
         }else {
             new Thread(new Runnable() {
                 public void run() {
+                    long startTime = System.currentTimeMillis();
 
-                    String[] str = {"1", "2", "3", "4", "5", "6", "7"};
-                    for (int i = 0; i < 7; i++) {
+                    String[] str = {"1", "2", "3", "4", "5", "6", "7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25"};
+                    for (int i = 0; i < 25; i++) {
                         Log.i(TAG, "读取第" + i + "张图片");
-                        String fileName = Environment.getExternalStorageDirectory().getPath() + "/" + str[i] + ".jpg";
+                        String fileName = Environment.getExternalStorageDirectory().getPath() + "/DCIM/calibration/" + str[i] + ".jpg";
                         Bitmap bitmap;
                         bitmap = ReadBitmap(fileName);
                         Mat MatProcessGray;     //灰度图
@@ -233,6 +235,8 @@ public class CalibrationActivity extends AppCompatActivity {
                                 mCalibrator.getCameraMatrix(), mCalibrator.getDistortionCoefficients());
                         Log.i(TAG, "保存标定参数...");
 
+                        long endTime = System.currentTimeMillis();
+                        System.out.println("运行时间:" + (endTime - startTime) + "ms");
             double error =  mCalibrator.getAvgReprojectionError();
 
             double[] x00 =  camera_matrix.get(0,0);
@@ -263,7 +267,8 @@ public class CalibrationActivity extends AppCompatActivity {
                     + String.valueOf(d0[0]) + "\t\t" + String.valueOf(d1[0]) + "\t\t"+ String.valueOf(d2[0])
                     + "\t\t"+ String.valueOf(d3[0]) + "\t\t"+ String.valueOf(d4[0]) + "\t\t"+ String.valueOf(d5[0])
                     + "\t\t"+ String.valueOf(d6[0]) + "\t\t"+ String.valueOf(d7[0]) + "\n"
-                    + "平均重投影误差：" + String.valueOf(error);
+                    + "平均重投影误差：" + String.valueOf(error) + "\n"
+                    + "运行时间:" + (endTime - startTime) + "ms";
 
                         //String str2 = String.valueOf(camera_matrix.get(0, 0)[0]);// + distortion_coefficients_matrix.toString();
                         strshow = str2;

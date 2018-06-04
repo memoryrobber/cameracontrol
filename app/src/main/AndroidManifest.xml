@@ -4,11 +4,13 @@
     <!-- android:versionCode="301"
     android:versionName="3.01" -->
 <!--android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
- landscape portrait -->
+ landscape portrait  TakePIcActivity -->
 
     <application
         android:label="@string/app_name"
         android:icon="@mipmap/ic_launcher"
+        android:hardwareAccelerated="false"
+        android:largeHeap="true"
         android:theme="@style/AppTheme">
 
         <activity android:name=".MainActivity"
@@ -33,13 +35,24 @@
 
         <activity
             android:name=".WireRadiusActivity"
-            android:label="线缆测量界面"
+            android:label="线缆弯曲半径测量界面"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name=".WireDiameterActivity"
+            android:label="线缆直径测量界面"
+            android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
 
         <activity android:name=".TakePIcActivity"
             android:label="拍照界面">

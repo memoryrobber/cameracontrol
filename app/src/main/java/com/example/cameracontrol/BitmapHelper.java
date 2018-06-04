@@ -7,7 +7,11 @@ import android.widget.ImageView;
 
 import org.opencv.android.Utils;
 import org.opencv.core.Mat;
+import org.opencv.core.Point;
+import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
+
+import static org.opencv.imgproc.Imgproc.MORPH_RECT;
 
 public class BitmapHelper {
     public static void ShowBitmap(ImageView imageView, Bitmap bitmap){
@@ -38,6 +42,16 @@ public class BitmapHelper {
         return bmp2;
     }
 
+    public static Bitmap BitmapGaussianBlur(Bitmap bmp1, int size) {
+        Mat mat1 = new Mat();
+        Mat mat2 = new Mat();
+        Bitmap bmp2 = bmp1.copy(Bitmap.Config.ARGB_8888, true);
+        Utils.bitmapToMat(bmp1, mat1);
+        Imgproc.GaussianBlur(mat1,mat2,new Size(size,size),0);
+        Utils.matToBitmap(mat2, bmp2);
+        return bmp2;
+    }
+
 
     public static Bitmap BitmapThreshold(Bitmap bmp1, int thresh) {
         Mat mat1 = new Mat();
@@ -55,6 +69,36 @@ public class BitmapHelper {
         Bitmap bmp2 = bmp1.copy(Bitmap.Config.ARGB_8888, true);
         Utils.bitmapToMat(bmp1, mat1);
         Imgproc.Canny(mat1, mat2, thresh1, thresh2);
+        Utils.matToBitmap(mat2, bmp2);
+        return bmp2;
+    }
+
+    public static Bitmap BitmapErosion(Bitmap bmp1){
+        Mat mat1 = new Mat();
+        Mat mat2 = new Mat();
+        Bitmap bmp2 = bmp1.copy(Bitmap.Config.ARGB_8888, true);
+        Utils.bitmapToMat(bmp1, mat1);
+        int erosion_size = 5;
+        Mat element = Imgproc.getStructuringElement(MORPH_RECT,
+                new Size(2 * erosion_size + 1, 2 * erosion_size + 1),
+                new Point(erosion_size, erosion_size));
+        Imgproc.erode(mat1,mat2,element);
+
+        Utils.matToBitmap(mat2, bmp2);
+        return bmp2;
+    }
+
+    public static Bitmap BitmapDilation(Bitmap bmp1){
+        Mat mat1 = new Mat();
+        Mat mat2 = new Mat();
+        Bitmap bmp2 = bmp1.copy(Bitmap.Config.ARGB_8888, true);
+        Utils.bitmapToMat(bmp1, mat1);
+        int dilation_size = 5;
+        Mat element = Imgproc.getStructuringElement(MORPH_RECT,
+                new Size(2 * dilation_size + 1, 2 * dilation_size + 1),
+                new Point(dilation_size, dilation_size));
+        Imgproc.dilate(mat1,mat2,element);
+
         Utils.matToBitmap(mat2, bmp2);
         return bmp2;
     }
